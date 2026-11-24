@@ -1,61 +1,70 @@
-// Every tuning number and colour in one place. The playfield is a fixed 1280x720 logical area;
-// the renderer scales it to the window, so no rule below depends on the screen size.
+// Solmar Heat — tuning and world constants. Everything in the game reads its sizes, speeds and
+// prices from here so the feel of Port Solana can be adjusted in one place.
 
-export const FIELD = { width: 1280, height: 720, groundY: 664 };
+// The city grid: square blocks separated by two-lane roads, a beach and the sea along the south.
+export const ROAD = 96; // road width in world pixels
+export const BLOCK = 224; // block size in world pixels
+export const PITCH = ROAD + BLOCK; // distance between neighbouring road centrelines
+export const COLS = 6; // blocks across
+export const ROWS = 5; // blocks down
+export const CITY_W = COLS * PITCH + ROAD; // asphalt-and-blocks width
+export const BEACH_H = 300; // sand strip south of the last road
+export const WORLD_W = CITY_W;
+export const WORLD_H = ROWS * PITCH + ROAD + BEACH_H;
 
-/** The simulation's fixed step, in seconds: 60 updates a second whatever the display's rate. */
-export const STEP = 1 / 60;
-
+// The person on foot.
 export const PLAYER = {
-  width: 72,
-  height: 24,
-  speed: 560,
-  invulnerable: 1.5,
+  radius: 11,
+  walkSpeed: 158,
+  runSpeed: 252,
+  accel: 1500,
+  maxHealth: 100,
+  punchRange: 34,
+  punchDamage: 34,
+  punchCooldown: 0.34,
 };
 
-export const LIVES = 3;
-
-export const BLOCK = {
-  minWidth: 40,
-  maxWidth: 110,
-  height: 36,
-  speed: 240,
-  speedPerLevel: 30,
-  speedJitter: 90,
-  interval: 0.55,
-  intervalScale: 0.88,
-  minInterval: 0.14,
-  dodgePoints: 1,
+// Cars: arcade handling, one set of numbers for every body with per-type multipliers.
+export const CAR = {
+  length: 46,
+  width: 22,
+  accel: 340,
+  brake: 520,
+  reverse: 150,
+  drag: 0.9,
+  gripTurn: 2.6, // steering rate at speed, rad/s
+  maxHealth: 100,
 };
 
-export const COIN = {
-  size: 24,
-  speed: 190,
-  speedPerLevel: 14,
-  interval: 1.4,
-  intervalJitter: 0.8,
-  points: 10,
+// Wanted levels run 0..5 stars. Heat is the fractional pressure underneath the stars.
+export const WANTED = {
+  maxStars: 5,
+  decayPerSecond: 0.045, // heat lost while no crime is fresh and no cop sees the player
+  sightRange: 330, // a cop or pedestrian inside this range witnesses crimes
+  bustFillTime: 1.6, // seconds of close police contact on foot to get busted
 };
 
-/** Seconds of play per level, and the last level: speeds and spawn rates stop growing there. */
-export const LEVEL = { seconds: 12, max: 12 };
+// Prices and rewards, in Port Solana dollars.
+export const PRICES = {
+  sprayJob: 100, // Pay 'n Spray: repair + lose the heat
+  ammoBox: 50, // +24 pistol rounds at the gun shop
+  armorVest: 150,
+  taxiFareBase: 40,
+  courierBase: 120,
+};
 
-/** How many falling things can exist at once; the pool is allocated once, at boot. */
-export const POOL_SIZE = 64;
+export const SAVE_KEY = 'solmar-heat-save-v1';
 
+// A warm late-afternoon palette: sun-soaked stucco, teal sea, coral roofs.
 export const PALETTE = {
-  backdrop: '#11141b',
-  sky: '#1b1f2a',
-  ground: '#2a3040',
-  player: '#4fc3f7',
-  block: '#e5534b',
-  coin: '#f2c94c',
-  panel: '#252b38',
-  text: '#eef1f5',
-  muted: '#8b93a3',
+  asphalt: '#3d4148',
+  asphaltEdge: '#34383f',
+  lane: '#e8c96a',
+  sidewalk: '#b8ab98',
+  blockGround: '#a89a83',
+  park: '#5f9e52',
+  sand: '#ecd29a',
+  sea: '#2e8fa3',
+  seaDeep: '#22707f',
+  roofShadow: 'rgba(30,20,10,0.35)',
 };
-
-export const FONT = 'system-ui, -apple-system, "Segoe UI", sans-serif';
-
-/** Where the best score is kept between visits (this browser only). */
-export const BEST_KEY = 'block-dodger.best';
